@@ -5,7 +5,7 @@ set :repo_url, 'https://github.com/CDLUC3/roadmap.git'
 
 # Default branch is :master
 #ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp unless ENV['BRANCH']
-set :branch, 'development' #ENV['BRANCH'] if ENV['BRANCH']
+set :branch, ENV['BRANCH'] if ENV['BRANCH']
 
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '/dmp/apps/roadmap'

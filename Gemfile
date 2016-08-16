@@ -125,3 +125,10 @@ gem 'swagger-docs'
 gem 'yard'
 gem 'redcarpet'
 
+
+# ---------------------------------------------------------------------------------------------
+#    DEPLOYMENT
+gem 'capistrano'
+gem 'capistrano-bundler'
+gem 'capistrano-passenger'
+gem 'capistrano-rails'

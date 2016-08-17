@@ -37,46 +37,25 @@ set :default_env, { path: "/dmp/local/bin:$PATH" }
 set :keep_releases, 5
 
 # passenger in gemfile set since we have both passenger and capistrano-passenger in gemfile
-set :passenger_in_gemfile, true
+#set :passenger_in_gemfile, true
 
 # Set whether to restart with touch of touch of tmp/restart.txt.
 # There may be difficulties one way or another.  Normal restart may require sudo in some circumstances.
-set :passenger_restart_with_touch, false
+#set :passenger_restart_with_touch, false
 
 namespace :deploy do
+  
+  after :deploy, :restart
+  
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
-
     end
   end
   
   desc 'Restart Phusion'
   task :restart do
     on roles(:app), wait: 5 do
-      # Your restart mechanism here, for example:
-      invoke 'deploy:stop'
-      invoke 'deploy:start'
-    end
-  end
-  
-  desc 'Start Phusion'
-  task :start do
-    on roles(:app) do
-      within current_path do
-        with rails_env: fetch(:rails_env) do
-          execute "cd #{deploy_to}/current; bundle install --no-deployment"
-          execute "cd #{deploy_to}/current; bundle exec passenger start -d --environment #{fetch(:rails_env)} --pid-file #{fetch(:passenger_pid)} -p #{fetch(:passenger_port)} --log-file #{fetch(:passenger_log)}"
-        end
-      end
-    end
-  end
-  
-  desc 'Stop Phusion'
-  task :stop do
-    on roles(:app) do
-      if test("[ -f #{fetch(:passenger_pid)} ]")
-        execute "cd #{deploy_to}/current; bundle exec passenger stop --pid-file #{fetch(:passenger_pid)}"
-      end
+      execute "/apps/dmp/init.d/passenger-dmp.dmp restart"
     end
   end
 end

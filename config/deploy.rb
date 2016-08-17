@@ -4,7 +4,7 @@ set :repo_url, 'https://github.com/DMPRoadmap/roadmap.git'
 #set :user, 'dmp'
 
 # Default branch is :master
-#ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp unless ENV['BRANCH']
+ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp unless ENV['BRANCH']
 set :branch, ENV['BRANCH'] if ENV['BRANCH']
 
 # Default deploy_to directory is /var/www/my_app_name
@@ -36,26 +36,20 @@ set :default_env, { path: "/dmp/local/bin:$PATH" }
 # Default value for keep_releases is 5
 set :keep_releases, 5
 
-# passenger in gemfile set since we have both passenger and capistrano-passenger in gemfile
-#set :passenger_in_gemfile, true
-
-# Set whether to restart with touch of touch of tmp/restart.txt.
-# There may be difficulties one way or another.  Normal restart may require sudo in some circumstances.
-#set :passenger_restart_with_touch, false
-
 namespace :deploy do
   
-  after :deploy, :restart
+  desc 'Restart Phusion'
+  task :restart_passenger do
+    on roles(:app), wait: 5 do
+      execute "#{fetch :passenger_restart}"
+    end
+  end
   
-  after :restart, :clear_cache do
+  after :deploy, 'deploy:restart_passenger'
+  
+  after :restart_passenger, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
     end
   end
-  
-  desc 'Restart Phusion'
-  task :restart do
-    on roles(:app), wait: 5 do
-      execute "/apps/dmp/init.d/passenger-dmp.dmp restart"
-    end
-  end
+
 end

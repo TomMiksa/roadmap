@@ -63,6 +63,7 @@ server fetch(:server_host), user: 'dmp', roles: %w{web app db}
 #   }
 
 set :rails_env, 'development'
-set :passenger_log, "/dmp/apps/roadmap/shared/log/passenger.log"
-set :passenger_pid, "/dmp/apps/roadmap/shared/tmp/pids/passenger.pid"
-set :passenger_port, "3000"
+#set :passenger_log, "/dmp/apps/roadmap/shared/log/passenger.log"
+#set :passenger_pid, "/dmp/apps/roadmap/shared/tmp/pids/passenger.pid"
+#set :passenger_port, "3000"
+set :passenger_restart, "cd /apps/dmp/init.d && ./passenger-dmp.dmp restart"
